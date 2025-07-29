@@ -19,4 +19,30 @@ router.post("/register", async (req, res) => {
   });
 });
 
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  const userExist = await userModel.findOne({
+    username: username,
+  });
+
+  if (!userExist) {
+    return res.status(401).json({
+      message: "Invalid User",
+    });
+  }
+
+  const isPasswordValid = password === userExist.password;
+
+  if (!isPasswordValid) {
+    return res.status(401).json({
+      message: "Invalid Password",
+    });
+  }
+
+  res.status(200).json({
+    message: "User Login Successfully",
+  });
+});
+
 module.exports = router;
