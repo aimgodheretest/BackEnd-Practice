@@ -1,6 +1,6 @@
 const express = require("express");
-
 const userModel = require("../models/user.model");
+const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
@@ -12,10 +12,17 @@ router.post("/register", async (req, res) => {
     username,
     password,
   });
+  const token = jwt.sign(
+    {
+      id: user._id,
+    },
+    process.env.JWT_SECRET
+  );
 
   res.status(201).json({
     message: "User Registered Successfully",
     user,
+    token,
   });
 });
 
@@ -32,7 +39,7 @@ router.post("/login", async (req, res) => {
     });
   }
 
-  const isPasswordValid = password === userExist.password;
+  const isPasswordValid = password == userExist.password;
 
   if (!isPasswordValid) {
     return res.status(401).json({
