@@ -18,11 +18,11 @@ router.post("/register", async (req, res) => {
     },
     process.env.JWT_SECRET
   );
+  res.cookie("token", token);
 
   res.status(201).json({
     message: "User Registered Successfully",
     user,
-    token,
   });
 });
 
@@ -53,7 +53,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/user", async (req, res) => {
-  const { token } = req.body;
+  const { token } = req.cookies;
 
   if (!token) {
     return res.status(401).json({
